@@ -1,0 +1,13 @@
+{
+  "name": "space2017",
+  "version": "1.0.0",
+  "description": "Hackanthon Space App 2017",
+  "author": "Milton Loayza",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "mongodb": "^2.2.26",
+    "q": "^1.5.0"
+  }
+}
