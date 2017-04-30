@@ -1,11 +1,16 @@
 const
     express = require('express'),
     MongoDAO = require('./mongoDAO'),
-    bodyParser = require('body-parser');
+    bodyParser = require('body-parser'),
+    path = require('path');
 
 
 var app = express();
 app.use(bodyParser.json());
+
+app.get('/', function(req, res){
+    res.sendFile(path.join( __dirname + '/index.html'))
+})
 
 app.get('/storage/:collection', function (req, res) {
     MongoDAO.get(req.params.collection).then(function (result) {
@@ -65,7 +70,7 @@ function sendError(res, error) {
     res.status(400).send({ msg: error });
 }
 
-app.listen(3000, function () {
+app.listen(3001, function () {
     console.log('API ready');
 });
 
