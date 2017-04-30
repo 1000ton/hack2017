@@ -1,7 +1,8 @@
 const
     Q = require('q');
 
-var MongoClient = require('mongodb').MongoClient;
+var MongoClient = require('mongodb').MongoClient,
+    ObjectID = require('mongodb').ObjectID;
 
 var URL_DB = 'mongodb://localhost:27017/space2017';
 
@@ -31,10 +32,10 @@ exports.save = function (collection, data) {
     });
 };
 
-exports.get = function (collection) {
-    console.log('Getting data from collection ' + collection);
+exports.get = function (collection, criteria) {
+    console.log('Getting data from collection ' + collection + ' with criteria ' + JSON.stringify(criteria));
     return connect().then(function (db) {
-        var cursor = db.collection(collection).find();
+        var cursor = db.collection(collection).find(criteria);
         var data = [];
         return Q.promise(function (resolve, reject) {
             cursor.each(function(error, doc) {
@@ -45,6 +46,9 @@ exports.get = function (collection) {
                     data.push(doc);
                 } else {
                     db.close();
+                    if (data.length === 1) {
+                        data = data[0]; // make object for single result
+                    }
                     resolve(data);
                 }
             });
@@ -52,3 +56,6 @@ exports.get = function (collection) {
     });
 };
 
+exports.getById = function (collection, id) {
+    return exports.get(collection, { _id: new ObjectID(id) })
+};
