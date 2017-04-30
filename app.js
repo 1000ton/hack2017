@@ -9,7 +9,6 @@ app.use(bodyParser.json());
 
 app.get('/storage/:collection', function (req, res) {
     MongoDAO.get(req.params.collection).then(function (result) {
-        console.log('get result ' + JSON.stringify(result));
         res.status(200).send(result);
     }).catch(function (error) {
         sendError(res, error);

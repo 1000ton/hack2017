@@ -36,18 +36,18 @@ exports.get = function (collection) {
     return connect().then(function (db) {
         var cursor = db.collection(collection).find();
         var data = [];
-        return cursor.each(function(error, doc) {
-            if (error) {
-                return Q.reject(error);
-            }
-            if (doc) {
-                console.log(doc);
-                data.push(doc);
-            } else {
-                db.close();
-                console.log('get insert ' + JSON.stringify(data));
-                return Q.fulfill(data);
-            }
+        return Q.promise(function (resolve, reject) {
+            cursor.each(function(error, doc) {
+                if (error) {
+                    reject(error);
+                }
+                if (doc) {
+                    data.push(doc);
+                } else {
+                    db.close();
+                    resolve(data);
+                }
+            });
         });
     });
 };
