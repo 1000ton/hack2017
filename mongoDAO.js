@@ -59,3 +59,18 @@ exports.get = function (collection, criteria) {
 exports.getById = function (collection, id) {
     return exports.get(collection, { _id: new ObjectID(id) })
 };
+
+
+exports.update = function (collection, id , data) {
+    console.log('Updating ' + id + 'into collection ' + collection  + ' DATA: ' + JSON.stringify(data));
+    var idObj  = { _id: new ObjectID(id) }
+    return connect().then(function (db) {
+        db.collection(collection).update(idObj, {$set : data}, {upsert:true, multi:true }, function (error, result) {
+            if (error) {
+                return Q.reject(error);
+            }
+            db.close();
+            return Q.fulfill(result);
+        });
+    });
+};
