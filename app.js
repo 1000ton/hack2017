@@ -2,10 +2,12 @@ const
     express = require('express'),
     MongoDAO = require('./mongoDAO'),
     bodyParser = require('body-parser'),
+    cors = require('cors'),
     path = require('path');
 
 
 var app = express();
+app.use(cors())
 app.use(bodyParser.json());
 
 app.get('/', function(req, res){
