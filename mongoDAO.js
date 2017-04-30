@@ -26,9 +26,24 @@ exports.save = function (collection, data) {
         return db.collection(collection).insertOne(data).then(function () {
             db.close();
             return Q.fulfill({_id: data._id});
+        }).catch( function(error){
+            return Q.reject(error)
         });
     });
 };
+
+exports.saveArray = function(collection, dataArray ){
+    console.log('Inserting into collection ' + collection  + ' DATA: ' + JSON.stringify(dataArray));
+    saveAll = function () {
+        return Q.all(dataArray.map(function(element){
+            return exports.save(collection, element)
+        }));
+    }
+    return saveAll().catch(function(error){
+        return Q.reject(error)
+    });
+
+}
 
 exports.get = function (collection, criteria) {
     console.log('Getting data from collection ' + collection + ' with criteria ' + JSON.stringify(criteria));
