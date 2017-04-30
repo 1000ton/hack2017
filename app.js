@@ -25,8 +25,17 @@ app.get('/storage/:collection/:id', function (req, res) {
 
 app.post('/storage/:collection', function (req, res) {
     if (!req.body) { res.send(400, { msg: 'Invalid payload' }); return; }
-    MongoDAO.save(req.params.collection, req.body).then(function () {
-        res.status(200).send();
+    MongoDAO.save(req.params.collection, req.body).then(function (result) {
+        res.status(200).send(result);
+    }).catch(function (error) {
+        sendError(res, error);
+    });
+});
+
+app.post('/storage/:collection/search', function (req, res) {
+    if (!req.body) { res.send(400, { msg: 'Invalid payload' }); return; }
+    MongoDAO.get(req.params.collection, req.body).then(function (result) {
+        res.status(200).send(result);
     }).catch(function (error) {
         sendError(res, error);
     });

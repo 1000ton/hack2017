@@ -22,12 +22,10 @@ var connect = function () {
 exports.save = function (collection, data) {
     console.log('Inserting into collection ' + collection  + ' DATA: ' + JSON.stringify(data));
     return connect().then(function (db) {
-        db.collection(collection).insertOne(data, function (error, result) {
-            if (error) {
-                return Q.reject(error);
-            }
+        data._id =  new ObjectID();
+        return db.collection(collection).insertOne(data).then(function () {
             db.close();
-            return Q.fulfill(result);
+            return Q.fulfill({_id: data._id});
         });
     });
 };
@@ -46,9 +44,6 @@ exports.get = function (collection, criteria) {
                     data.push(doc);
                 } else {
                     db.close();
-                    if (data.length === 1) {
-                        data = data[0]; // make object for single result
-                    }
                     resolve(data);
                 }
             });
@@ -57,7 +52,12 @@ exports.get = function (collection, criteria) {
 };
 
 exports.getById = function (collection, id) {
-    return exports.get(collection, { _id: new ObjectID(id) })
+    return exports.get(collection, { _id: new ObjectID(id) }).then(function (data) {
+        if (data.length === 0) {
+            return Q.reject('Not found');
+        }
+        return Q.fulfill(data[0]);
+    })
 };
 
 
