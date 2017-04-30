@@ -42,7 +42,15 @@ app.put('/storage/:collection/:id', function (req, res) {
     })
 });
 
-
+//  DELETE /storage/MY_COLLECTION/{ID} 
+app.delete('/storage/:collection/:id', function (req, res) {
+    if (!req.body) { res.send(400, { msg: 'Invalid payload' }); return; }
+    MongoDAO.remove(req.params.collection, req.params.id, req.body).then(function () {
+        res.status(200).send();
+    }).catch( function(error) {
+        sendError(res, error)
+    })
+});
 
 function sendError(res, error) {
     res.status(400).send({ msg: error });

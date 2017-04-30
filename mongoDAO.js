@@ -74,3 +74,17 @@ exports.update = function (collection, id , data) {
         });
     });
 };
+
+exports.remove = function (collection, id , data) {
+    console.log('Deleting ' + id + 'into collection ' + collection  + ' DATA: ' + JSON.stringify(data));
+    var idObj  = { _id: new ObjectID(id) }
+    return connect().then(function (db) {
+        db.collection(collection).remove(idObj, {remove:true}, function (error, result) {
+            if (error) {
+                return Q.reject(error);
+            }
+            db.close();
+            return Q.fulfill(result);
+        });
+    });
+};
